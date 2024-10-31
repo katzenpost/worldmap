@@ -7,6 +7,7 @@ import geoip2
 import cbor2
 import matplotlib.pyplot as plt
 import cartopy.crs as ccrs
+import click
 
 from thinclient import ThinClient, Config, pretty_print_obj
 
@@ -73,11 +74,19 @@ def plot_world_map(diraut_gps_coords, mix_gps_coords, out_file):
     plt.savefig(out_file, dpi=300)
     print(f"wrote world map to {out_file}")
 
-async def main(geolite2_city_db_filepath='../../GeoLite2-City_20241025/GeoLite2-City.mmdb', dirauth_ips_filepath=None):
+@click.command()
+@click.option("--geolite2-db", "geolite2_city_db_filepath", default="GeoLite2-City.mmdb",
+              show_default=True, help="Path to the GeoLite2 City database.")
+@click.option("--dirauth-ips", "dirauth_ips_filepath", default=None,
+              help="File containing the list of directory authority IP
+              addresses, one address per line.File containing the list
+              of directory authority IP addresses.")
+@click.option("--output", "out_file", default="world_map.png", show_default=True,
+              help="Output file name for the generated world map.")
+async def main(geolite2_city_db_filepath, dirauth_ips_filepath, out_file):
     cfg = Config()
     client = ThinClient(cfg)
-    loop = asyncio.get_event_loop()
-    await client.start(loop)
+    await client.start(asyncio.get_event_loop())
     doc = client.pki_document()
     client.stop()
 
@@ -92,11 +101,9 @@ async def main(geolite2_city_db_filepath='../../GeoLite2-City_20241025/GeoLite2-
         dirauth_ips = read_dirauth_ips(dirauth_ips_filepath)
         dirauth_gps_coords = get_gps_coords(dirauth_ips, geolite2_city_db_filepath)
     
-    plot_world_map(dirauth_gps_coords, mix_gps_coords, "world_map.png")
-
+    plot_world_map(dirauth_gps_coords, mix_gps_coords, out_file)
     print(doc.keys())
 
+
 if __name__ == '__main__':
-    import sys
-    dirauth_ips_file = sys.argv[1] if len(sys.argv) > 1 else None
-    asyncio.run(main(dirauth_ips_filepath=dirauth_ips_file))
+    asyncio.run(main())
