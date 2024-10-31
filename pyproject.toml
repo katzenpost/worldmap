@@ -1,0 +1,37 @@
+[project]
+name = "worldmap"
+version = "0.0.1"
+dynamic = ["dependencies"]
+authors = [
+  { name="David Stainton", email="dstainton415@gmail.com" },
+]
+description = "Draw a world map with the mix network nodes overlayed on top."
+readme = "README.md"
+requires-python = ">=3.8"
+classifiers = [
+    "Intended Audience :: System Administrators",
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: GNU Affero General Public License v3",
+    "Operating System :: OS Independent",
+    "Topic :: Security :: Cryptography",
+]
+
+[project.urls]
+Homepage = "https://github.com/katzenpost/worldmap"
+Issues = "https://github.com/katzenpost/worldmap/issues"
+
+[project.scripts]
+worldmap = "worldmap.main:main"
+
+[build-system]
+requires = ["hatchling", "hatch-requirements-txt"]
+build-backend = "hatchling.build"
+
+[tool.hatch.metadata.hooks.requirements_txt]
+files = ["requirements.txt"]
+
+[project.optional-dependencies]
+test = [
+    "pytest",
+    "pytest-cov",
+]
