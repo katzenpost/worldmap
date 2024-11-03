@@ -6,10 +6,12 @@ import geoip2.database
 import geoip2
 import cbor2
 import matplotlib.pyplot as plt
+import cartopy.io.img_tiles
+import cartopy.crs
 import cartopy.crs as ccrs
 import click
 
-from thinclient import ThinClient, Config, pretty_print_obj
+from thinclient import ThinClient, Config
 
 def get_nodes(doc):
     nodes = []
@@ -61,17 +63,19 @@ def get_gps_coords(ip_addrs, geolite2_city_db_filepath):
                 print(f"Location not found for IP: {ip}")
     return gps_coords
 
-def plot_world_map(diraut_gps_coords, mix_gps_coords, out_file):
-    fig = plt.figure(figsize=(10, 7))
-    ax = plt.axes(projection=ccrs.Robinson())
-    ax.stock_img()
-    ax.coastlines()
-    for lon, lat in mix_gps_coords:
-        ax.plot(lon, lat, marker='o', color='red', markersize=5, transform=ccrs.PlateCarree())
-    for lon, lat in diraut_gps_coords:
-        ax.plot(lon, lat, marker='o', color='purple', markersize=5, transform=ccrs.PlateCarree())
 
-    plt.savefig(out_file, dpi=300)
+def plot_world_map(diraut_gps_coords, mix_gps_coords, out_file):
+    fig = plt.figure(figsize=(4, 2), facecolor="black")
+    ax = plt.axes(projection=ccrs.Mollweide())
+    plt.subplots_adjust(left=0, right=1, top=1, bottom=0)
+    ax.coastlines(color="white")
+    ax.add_feature(cartopy.feature.BORDERS, linestyle='-', alpha=0.5)
+    ax.add_feature(cartopy.feature.OCEAN, color="black")
+    for lon, lat in mix_gps_coords:
+        ax.plot(lon, lat, marker='o', color='red', markersize=3, transform=ccrs.PlateCarree())
+    for lon, lat in diraut_gps_coords:
+        ax.plot(lon, lat, marker='o', color='purple', markersize=4, transform=ccrs.PlateCarree())
+    plt.savefig(out_file, dpi=200, bbox_inches="tight", pad_inches=0)
     print(f"wrote world map to {out_file}")
 
 
