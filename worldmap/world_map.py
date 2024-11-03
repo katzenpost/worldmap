@@ -74,16 +74,18 @@ def plot_world_map(diraut_gps_coords, mix_gps_coords, out_file):
     plt.savefig(out_file, dpi=300)
     print(f"wrote world map to {out_file}")
 
+
 @click.command()
 @click.option("--geolite2-db", "geolite2_city_db_filepath", default="GeoLite2-City.mmdb",
               show_default=True, help="Path to the GeoLite2 City database.")
 @click.option("--dirauth-ips", "dirauth_ips_filepath", default=None,
-              help="File containing the list of directory authority IP
-              addresses, one address per line.File containing the list
-              of directory authority IP addresses.")
+              help="File containing the list of directory authority IP addresses, one address per line.")
 @click.option("--output", "out_file", default="world_map.png", show_default=True,
               help="Output file name for the generated world map.")
-async def main(geolite2_city_db_filepath, dirauth_ips_filepath, out_file):
+def main(geolite2_city_db_filepath, dirauth_ips_filepath, out_file):
+    asyncio.run(run_async(geolite2_city_db_filepath, dirauth_ips_filepath, out_file))
+
+async def run_async(geolite2_city_db_filepath, dirauth_ips_filepath, out_file):
     cfg = Config()
     client = ThinClient(cfg)
     await client.start(asyncio.get_event_loop())
@@ -104,6 +106,5 @@ async def main(geolite2_city_db_filepath, dirauth_ips_filepath, out_file):
     plot_world_map(dirauth_gps_coords, mix_gps_coords, out_file)
     print(doc.keys())
 
-
 if __name__ == '__main__':
-    asyncio.run(main())
+    main()
