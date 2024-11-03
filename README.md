@@ -4,14 +4,19 @@
 
 ---
 
+![world map image](world_map.png "world map")
+
+
 ## status
 
 works with Katzenpost version v0.0.41 or later
 
 ## Installation / Depedencies
 
+
 **worldmap** depends on the thinclient which requires you
 to run a katzenpost client2 daemon. Build `kpclientd`:
+
 
 ```bash
 git clone https://github.com/katzenpost/katzenpost.git
