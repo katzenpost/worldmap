@@ -21,7 +21,7 @@ Homepage = "https://github.com/katzenpost/worldmap"
 Issues = "https://github.com/katzenpost/worldmap/issues"
 
 [project.scripts]
-worldmap = "worldmap.main:main"
+worldmap = "worldmap.world_map:main"
 
 [build-system]
 requires = ["hatchling", "hatch-requirements-txt"]

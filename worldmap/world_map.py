@@ -11,7 +11,7 @@ import cartopy.crs
 import cartopy.crs as ccrs
 import click
 
-from thinclient import ThinClient, Config
+from katzenpost_thinclient import ThinClient, Config
 
 def get_nodes(doc):
     nodes = []
@@ -80,17 +80,19 @@ def plot_world_map(diraut_gps_coords, mix_gps_coords, out_file):
 
 
 @click.command()
+@click.option("--config", "config_path", required=True,
+              help="Path to the thin client TOML configuration file.")
 @click.option("--geolite2-db", "geolite2_city_db_filepath", default="GeoLite2-City.mmdb",
               show_default=True, help="Path to the GeoLite2 City database.")
 @click.option("--dirauth-ips", "dirauth_ips_filepath", default=None,
               help="File containing the list of directory authority IP addresses, one address per line.")
 @click.option("--output", "out_file", default="world_map.png", show_default=True,
               help="Output file name for the generated world map.")
-def main(geolite2_city_db_filepath, dirauth_ips_filepath, out_file):
-    asyncio.run(run_async(geolite2_city_db_filepath, dirauth_ips_filepath, out_file))
+def main(config_path, geolite2_city_db_filepath, dirauth_ips_filepath, out_file):
+    asyncio.run(run_async(config_path, geolite2_city_db_filepath, dirauth_ips_filepath, out_file))
 
-async def run_async(geolite2_city_db_filepath, dirauth_ips_filepath, out_file):
-    cfg = Config()
+async def run_async(config_path, geolite2_city_db_filepath, dirauth_ips_filepath, out_file):
+    cfg = Config(config_path)
     client = ThinClient(cfg)
     await client.start(asyncio.get_event_loop())
     doc = client.pki_document()

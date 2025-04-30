@@ -9,7 +9,7 @@
 
 ## status
 
-works with Katzenpost version v0.0.41 or later
+Works with Katzenpost v0.0.49 or later.
 
 ## Installation / Depedencies
 
@@ -30,17 +30,6 @@ Run the client daemon first:
 ./kpclientd -c /home/human/client2.toml
 ```
 
-Our thinclient currently requires that your client2 config
-has the follow settings:
-
-```toml
-ListenNetwork = "unix"
-ListenAddress = "@katzenpost"
-```
-
-which ensures that the client2 daemon listens on the "@katzenpost"
-abstract unix domain socket for thinclient connections.
-
 You will need to supply a copy of the geoip database. You can
 download your free copy from https://dev.maxmind.com/geoip/geolite2-free-geolocation-data/
 
@@ -49,9 +38,11 @@ download your free copy from https://dev.maxmind.com/geoip/geolite2-free-geoloca
 ### Commandline Usage
 
 ```
-Usage: world_map.py [OPTIONS]
+Usage: worldmap [OPTIONS]
 
 Options:
+  --config TEXT       Path to the thin client TOML configuration file.
+                      [required]
   --geolite2-db TEXT  Path to the GeoLite2 City database.  [default:
                       GeoLite2-City.mmdb]
   --dirauth-ips TEXT  File containing the list of directory authority IP
@@ -59,6 +50,15 @@ Options:
   --output TEXT       Output file name for the generated world map.  [default:
                       world_map.png]
   --help              Show this message and exit.
+```
+
+
+### Example CLI Usage
+
+```bash
+
+worldmap --config ~/code/katzenpost/docker/voting_mixnet/client2/thinclient.toml --geolite2-db /home/human/code/GeoLite2-City_20241025/GeoLite2-City.mmdb --dirauth-ips wtf.list --output world_mixnet_map.png
+
 ```
 
 # License
